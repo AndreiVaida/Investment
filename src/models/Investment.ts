@@ -3,7 +3,6 @@ export type Investment = {
     substractFilingFee: SubstractFee,
     monthlyFee: number,
     yearlyReturnPercent: number,
-    substractWithdrawFee: SubstractFee,
     performances: Performance[]
 }
 
@@ -38,9 +37,21 @@ export type ComplexPerformance = {
     totalProfit: number
 }
 
+export type InvestmentWithWithdrawFees = Investment & {
+    substractWithdrawFeeVariants: SubstractFee[],
+    performances: PerformanceWithWithdrawFees[]
+}
+
+export type PerformanceWithWithdrawFees = Performance & {
+    totalBalance2: number,
+    totalBalance3: number,
+    profit2: number,
+    profit3: number
+}
+
 export type YearlyReturn = {
     name: string,
     percent: number
 }
 
-export type SubstractFee = (amount: number, totalBalance: number) => number;
+export type SubstractFee = (amount: number, totalBalance?: number) => number;

@@ -1,5 +1,5 @@
 import { evaluate } from 'mathjs';
-import { ComplexInvestment, ComplexPerformance, Investment, Performance, SubstractFee } from "../models/Investment"
+import { ComplexInvestment, ComplexPerformance, Investment, InvestmentWithWithdrawFees, Performance, PerformanceWithWithdrawFees, SubstractFee } from "../models/Investment"
 
 export const computePerformances = (investment: Investment, years: number[]): Performance[] =>
     years.map(year => {
@@ -25,11 +25,15 @@ const computeTotalBalance = (yearlyReturnPercent: number,
                              substractFilingFee: SubstractFee,
                              monthlyInvestment: number,
                              monthlyFee: number,
-                             year: number): number =>
-    arrayOf(year).reduce((totalBalance, year) => {
+                             year: number,
+                             withdrawFee?: SubstractFee): number => {
+    const balance = arrayOf(year).reduce((totalBalance, year) => {
         const yearBalanceBeforeProfit = addYearInvestmentToBalance(substractFilingFee, monthlyInvestment, monthlyFee, totalBalance);
         return evaluate(`${yearBalanceBeforeProfit} + ${yearlyReturnPercent}%`);
-    }, 0)
+    }, 0);
+
+    return withdrawFee ? withdrawFee(balance) : balance;
+}
 
 const addYearInvestmentToBalance = (substractFilingFee: SubstractFee,
                                     monthlyInvestment: number,
@@ -114,6 +118,42 @@ const addComplexYearInvestmentToBalance = (substractFilingFee: SubstractFee,
             stockMarketYearBalanceBeforeProfit: stockMarketYearBalanceBeforeProfit + innerMonthInvestment
         }
     }, {bondsYearBalanceBeforeProfit: startYearBondsBallance, stockMarketYearBalanceBeforeProfit: startYearStockMarketBallance})
+
+export const computePerformancesWithWithdrawFees = (investment: InvestmentWithWithdrawFees, years: number[]): PerformanceWithWithdrawFees[] =>
+    years.map(year => {
+        const performance: PerformanceWithWithdrawFees = {
+            year: year,
+            investedMoney: computeInvestedMoney(investment.monthlyInvestment, year),
+            totalBalance: 0,
+            totalBalance2: 0,
+            totalBalance3: 0,
+            profit: 0,
+            profit2: 0,
+            profit3: 0
+        };
+        performance.totalBalance = computeTotalBalance(investment.yearlyReturnPercent,
+                                                       investment.substractFilingFee,
+                                                       investment.monthlyInvestment,
+                                                       investment.monthlyFee,
+                                                       year,
+                                                       investment.substractWithdrawFeeVariants[0]);
+        performance.totalBalance2 = computeTotalBalance(investment.yearlyReturnPercent,
+                                                        investment.substractFilingFee,
+                                                        investment.monthlyInvestment,
+                                                        investment.monthlyFee,
+                                                        year,
+                                                        investment.substractWithdrawFeeVariants[1]);
+        performance.totalBalance3 = computeTotalBalance(investment.yearlyReturnPercent,
+                                                        investment.substractFilingFee,
+                                                        investment.monthlyInvestment,
+                                                        investment.monthlyFee,
+                                                        year,
+                                                        investment.substractWithdrawFeeVariants[2]);
+        performance.profit = performance.totalBalance - performance.investedMoney;
+        performance.profit2 = performance.totalBalance2 - performance.investedMoney;
+        performance.profit3 = performance.totalBalance3 - performance.investedMoney;
+        return performance;
+    });
 
 const arrayOf = (n: number): number[] => Array.from(Array(n).keys());
 

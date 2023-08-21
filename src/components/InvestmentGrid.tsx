@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
-import { Investment, Performance, ComplexInvestment, ComplexPerformance } from '../models/Investment';
+import { Investment, Performance, ComplexInvestment, ComplexPerformance, InvestmentWithWithdrawFees, PerformanceWithWithdrawFees } from '../models/Investment';
 
 export type InvestmentGridProps = {
     investment: Investment
@@ -10,6 +10,10 @@ export type InvestmentGridProps = {
 
 export type ComplexInvestmentGridProps = {
     investment: ComplexInvestment
+}
+
+export type InvestmentGridWithMultipleWithdrawFeesProps = {
+    investment: InvestmentWithWithdrawFees
 }
 
 const currencyFormatter = (amount: number): string => {
@@ -59,6 +63,30 @@ export const ComplexInvestmentGrid = (props: ComplexInvestmentGridProps) => {
 
         { ...currencyColumnProperties("totalBalance"), field: 'totalBalance' },
         { ...currencyColumnProperties("totalProfit"), field: 'totalProfit', cellClassRules: profitCellClassRules }
+    ]);
+
+    return (
+        <>
+            <AgGridReact
+                rowData={rowData}
+                columnDefs={columnDefs}
+                headerHeight={40}>
+            </AgGridReact>
+        </>
+    )
+}
+
+export const InvestmentGridWithMultipleWithdrawFees = (props: InvestmentGridWithMultipleWithdrawFeesProps) => {
+    const [rowData, setRowData] = useState<PerformanceWithWithdrawFees[]>(props.investment.performances);
+    const [columnDefs, setColumnDefs] = useState([
+        { field: 'year', width: 80 },
+        { ...currencyColumnProperties("investedMoney"), field: 'investedMoney', headerClass: 'less-important', cellStyle: {color: 'grey'} },
+        { ...currencyColumnProperties("totalBalance"), field: 'totalBalance', headerName:"Total Balance -1%" },
+        { ...currencyColumnProperties("totalBalance2"), field: 'totalBalance2', headerName:"Total Balance -3%" },
+        { ...currencyColumnProperties("totalBalance3"), field: 'totalBalance3', headerName:"Total Balance -10%" },
+        { ...currencyColumnProperties("profit"), field: 'profit', headerName:"Profit -1%", cellClassRules: profitCellClassRules },
+        { ...currencyColumnProperties("profit2"), field: 'profit2', headerName:"Profit -3%", cellClassRules: profitCellClassRules },
+        { ...currencyColumnProperties("profit3"), field: 'profit3', headerName:"Profit -10%", cellClassRules: profitCellClassRules }
     ]);
 
     return (

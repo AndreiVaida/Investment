@@ -1,3 +1,7 @@
+h2 {
+  margin-bottom: 0;
+}
+
 .App {
   text-align: center;
 }
@@ -12,4 +16,18 @@
 
 .loss-cell {
   color: red
+}
+
+.ag-header-cell-label {
+  text-overflow: clip;
+  overflow: visible;
+  white-space: normal;
+}
+
+.ag-theme-balham {
+  --ag-font-family: monospace !important;
+}
+
+.less-important {
+  color: grey;
 }

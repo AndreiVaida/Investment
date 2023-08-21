@@ -1,8 +1,9 @@
 import {evaluate} from 'mathjs';
-import { Investment, Performance } from '../models/Investment';
-import { computePerformances } from '../services/InvestmentService';
+import { ComplexInvestment, Investment } from '../models/Investment';
+import { computeComplexPerformances, computePerformances } from '../services/InvestmentService';
 
 const investmentYears = [1, 10, 20, 30, 40, 50];
+const monthlyInvestment = 500;
 
 const allianzFillingFeeFunction = (amount: number, totalBalance: number): number => {
     const feePercent = totalBalance <= 6000 ? 5
@@ -11,15 +12,10 @@ const allianzFillingFeeFunction = (amount: number, totalBalance: number): number
                      : totalBalance <= 30000 ? 3.5
                      : totalBalance <= 90000 ? 3
                      : 2.5;
-    return evaluate(`${amount} - ${feePercent}%`);
+    return evaluate(`${amount} - ${4}%`);
 }
 
-const allianzMeanFillingFeeFunction = (amount: number, totalBalance: number): number => {
-    const feePercent = 4;
-    return evaluate(`${amount} - ${feePercent}%`);
-}
-
-export const allianzInvestment: Investment = {
+export const basicAllianzInvestment: Investment = {
     monthlyInvestment: 500,
     substractFilingFee: allianzFillingFeeFunction,
     monthlyFee: 13.5,
@@ -27,4 +23,14 @@ export const allianzInvestment: Investment = {
     substractWithdrawFee: (amount) => amount,
     performances: []
 }
-allianzInvestment.performances = computePerformances(allianzInvestment, investmentYears);
+basicAllianzInvestment.performances = computePerformances(basicAllianzInvestment, investmentYears);
+
+export const detailedAllianzInvestment: ComplexInvestment = {
+    monthlyInvestment: monthlyInvestment,
+    substractFilingFee: allianzFillingFeeFunction,
+    monthlyFee: 13.5,
+    bondsYearlyReturnPercent: 4,
+    stockYearlyReturnPercent: 10,
+    performances: []
+}
+detailedAllianzInvestment.performances = computeComplexPerformances(detailedAllianzInvestment, investmentYears);

@@ -24,7 +24,7 @@ const getTradeVilleWithdrawFeeFunctions = (): SubstractFee[] => {
     };
     const governmentWithdrawFeeFunction2 = (amount: number): number => {
         const amountAfterTradeVilleFee = evaluate(`${amount} - 0.65%`);
-        return evaluate(`${amountAfterTradeVilleFee} - 3%`);
+        return evaluate(`${amountAfterTradeVilleFee} - 4.7%`);  // 4.7% is the equivalent for Allianz Stock Market, 5.8% is the equivalent for Allia total offer
     };
     const governmentWithdrawFeeFunction3 = (amount: number): number => {
         const amountAfterTradeVilleFee = evaluate(`${amount} - 0.65%`);

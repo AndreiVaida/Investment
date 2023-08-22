@@ -4,7 +4,7 @@ import { basicAllianzInvestment, complexVsManualPerformances, detailedAllianzInv
 
 const App = () => {
   return (
-    <div className="App ag-theme-balham" style={{ height: 230, width: "100%" }}>
+    <div className="App ag-theme-balham" style={{ height: 250, width: "100%" }}>
       <h3>500 Lei / month</h3>
 
       <h2>Allianz Țiriac: Dinamic Invest - basic estimation</h2>

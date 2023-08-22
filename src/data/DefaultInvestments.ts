@@ -1,6 +1,6 @@
 import {evaluate} from 'mathjs';
-import { ComplexInvestment, Investment, InvestmentWithWithdrawFees, SubstractFee } from '../models/Investment';
-import { computeComplexPerformances, computePerformances, computePerformancesWithWithdrawFees } from '../services/InvestmentService';
+import { ComplexInvestment, ComplexVsManualPerformance, Investment, InvestmentWithWithdrawFees, SubstractFee } from '../models/Investment';
+import { computeComplexPerformances, computePerformances, computePerformancesWithWithdrawFees, mergeAndComputeDifference } from '../services/InvestmentService';
 
 const investmentYears = [1, 10, 20, 30, 40, 50];
 const monthlyInvestment = 500;
@@ -71,3 +71,5 @@ export const manualStockMarketInvestment: InvestmentWithWithdrawFees = {
     performances: []
 }
 manualStockMarketInvestment.performances = computePerformancesWithWithdrawFees(manualStockMarketInvestment, investmentYears);
+
+export const complexVsManualPerformances: ComplexVsManualPerformance[] = mergeAndComputeDifference(investmentYears, detailedAllianzInvestment, manualBondsInvestment, manualStockMarketInvestment);

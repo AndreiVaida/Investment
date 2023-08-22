@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
-import 'ag-grid-community/styles/ag-theme-alpine.css';
-import { Investment, Performance, ComplexInvestment, ComplexPerformance, InvestmentWithWithdrawFees, PerformanceWithWithdrawFees } from '../models/Investment';
+import 'ag-grid-community/styles/ag-theme-balham.css';
+import { Investment, Performance, ComplexInvestment, ComplexPerformance, InvestmentWithWithdrawFees, PerformanceWithWithdrawFees, ComplexVsManualPerformance } from '../models/Investment';
 
 export type InvestmentGridProps = {
     investment: Investment
@@ -16,6 +16,10 @@ export type InvestmentGridWithMultipleWithdrawFeesProps = {
     investment: InvestmentWithWithdrawFees
 }
 
+export type ComplexVsManualPerformanceProps = {
+    complexVsManualPerformances: ComplexVsManualPerformance[]
+}
+
 const currencyFormatter = (amount: number): string => {
     var integerAmount = amount.toFixed(0);
     var formatted = integerAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
@@ -25,16 +29,19 @@ const currencyFormatter = (amount: number): string => {
 const profitCellClassRules = {
     'profit-cell': (params: any) => params.value > 0,
     'loss-cell': (params: any) => params.value <= 0,
+    'right-border': (params: any) => !['complex_totalProfit', 'manual_totalProfit1', 'manual_totalProfit2', 'manual_totalProfit3'].includes(params.colDef.field),
+    'bold-text': (params: any) => params.colDef.field.includes("Difference"),
 }
 
 const currencyColumnProperties = (field: string) => ({ width: 150, type: 'rightAligned', valueFormatter: (params: any) => currencyFormatter(params.data[field]) });
+const smallCurrencyColumnProperties = (field: string) => ({ ...currencyColumnProperties(field), width: 125 });
   
 export const InvestmentGrid = (props: InvestmentGridProps) => {
     const [rowData, setRowData] = useState<Performance[]>(props.investment.performances);
     const [columnDefs, setColumnDefs] = useState([
         { field: 'year', width: 80 },
         { ...currencyColumnProperties("investedMoney"), field: 'investedMoney', headerClass: 'less-important', cellStyle: {color: 'grey'} },
-        { ...currencyColumnProperties("totalBalance"), field: 'totalBalance' },
+        { ...currencyColumnProperties("balance"), field: 'balance' },
         { ...currencyColumnProperties("profit"), field: 'profit', cellClassRules: profitCellClassRules }
     ]);
 
@@ -81,9 +88,9 @@ export const InvestmentGridWithMultipleWithdrawFees = (props: InvestmentGridWith
     const [columnDefs, setColumnDefs] = useState([
         { field: 'year', width: 80 },
         { ...currencyColumnProperties("investedMoney"), field: 'investedMoney', headerClass: 'less-important', cellStyle: {color: 'grey'} },
-        { ...currencyColumnProperties("totalBalance"), field: 'totalBalance', headerName:"Total Balance -1%" },
-        { ...currencyColumnProperties("totalBalance2"), field: 'totalBalance2', headerName:"Total Balance -3%" },
-        { ...currencyColumnProperties("totalBalance3"), field: 'totalBalance3', headerName:"Total Balance -10%" },
+        { ...currencyColumnProperties("balance"), field: 'balance', headerName:"Total Balance -1%" },
+        { ...currencyColumnProperties("balance2"), field: 'balance2', headerName:"Total Balance -3%" },
+        { ...currencyColumnProperties("balance3"), field: 'balance3', headerName:"Total Balance -10%" },
         { ...currencyColumnProperties("profit"), field: 'profit', headerName:"Profit -1%", cellClassRules: profitCellClassRules },
         { ...currencyColumnProperties("profit2"), field: 'profit2', headerName:"Profit -3%", cellClassRules: profitCellClassRules },
         { ...currencyColumnProperties("profit3"), field: 'profit3', headerName:"Profit -10%", cellClassRules: profitCellClassRules }
@@ -93,6 +100,53 @@ export const InvestmentGridWithMultipleWithdrawFees = (props: InvestmentGridWith
         <>
             <AgGridReact
                 rowData={rowData}
+                columnDefs={columnDefs}
+                headerHeight={40}>
+            </AgGridReact>
+        </>
+    )
+}
+
+export const ComplexInvestmentGridVsManualMultipleWithdrawFees = (props: ComplexVsManualPerformanceProps) => {
+    const [rowData, setRowData] = useState<ComplexVsManualPerformance[]>(props.complexVsManualPerformances);
+    const [columnDefs, setColumnDefs] = useState([
+        { field: 'year', width: 55, pinned: 'left' },
+        { ...smallCurrencyColumnProperties("investedMoney"), field: 'investedMoney', headerClass: 'less-important', cellStyle: {color: 'grey'} },
+
+        { ...smallCurrencyColumnProperties("complex_bondsBalance"), field: 'complex_bondsBalance' },
+        { ...smallCurrencyColumnProperties("manual_bondsBalance"), field: 'manual_bondsBalance' },
+        { ...smallCurrencyColumnProperties("bondsBalanceDifference"), field: 'bondsBalanceDifference', cellClassRules: profitCellClassRules, headerClass: 'bold-text-header' },
+
+        { ...smallCurrencyColumnProperties("complex_stockMarketBalance"), field: 'complex_stockMarketBalance' },
+        { ...smallCurrencyColumnProperties("manual_stockMarketBalance1"), field: 'manual_stockMarketBalance1', headerName:"Stock Balance -1%" },
+        { ...smallCurrencyColumnProperties("stockBalanceDifference1"), field: 'stockBalanceDifference1', headerName:"Stock Balance Difference -1%", cellClassRules: profitCellClassRules, headerClass: 'bold-text-header' },
+        { ...smallCurrencyColumnProperties("manual_stockMarketBalance2"), field: 'manual_stockMarketBalance2', headerName:"Stock Balance -3%" },
+        { ...smallCurrencyColumnProperties("stockBalanceDifference2"), field: 'stockBalanceDifference2', headerName:"Stock Balance Difference -3%", cellClassRules: profitCellClassRules, headerClass: 'bold-text-header' },
+        { ...smallCurrencyColumnProperties("manual_stockMarketBalance3"), field: 'manual_stockMarketBalance3', headerName:"Stock Balance -10%" },
+        { ...smallCurrencyColumnProperties("stockBalanceDifference3"), field: 'stockBalanceDifference3', headerName:"Stock Balance Difference -10%", cellClassRules: profitCellClassRules, headerClass: 'bold-text-header' },
+
+        { ...smallCurrencyColumnProperties("complex_totalBalance"), field: 'complex_totalBalance' },
+        { ...smallCurrencyColumnProperties("manual_totalBalance1"), field: 'manual_totalBalance1', headerName:"Manual Total Balance -1%" },
+        { ...smallCurrencyColumnProperties("totalBalanceDifference1"), field: 'totalBalanceDifference1', headerName:"Total Balance Difference -1%", cellClassRules: profitCellClassRules, headerClass: 'bold-text-header' },
+        { ...smallCurrencyColumnProperties("manual_totalBalance2"), field: 'manual_totalBalance2', headerName:"Manual Total Balance -3%" },
+        { ...smallCurrencyColumnProperties("totalBalanceDifference2"), field: 'totalBalanceDifference2', headerName:"Total Balance Difference -3%", cellClassRules: profitCellClassRules, headerClass: 'bold-text-header' },
+        { ...smallCurrencyColumnProperties("manual_totalBalance3"), field: 'manual_totalBalance3', headerName:"Manual Total Balance -10%" },
+        { ...smallCurrencyColumnProperties("totalBalanceDifference3"), field: 'totalBalanceDifference3', headerName:"Total Balance Difference -10%", cellClassRules: profitCellClassRules, headerClass: 'bold-text-header' },
+
+        { ...smallCurrencyColumnProperties("complex_totalProfit"), field: 'complex_totalProfit', cellClassRules: profitCellClassRules },
+        { ...smallCurrencyColumnProperties("manual_totalProfit1"), field: 'manual_totalProfit1', headerName:"Manual Total Profit -1%", cellClassRules: profitCellClassRules },
+        { ...smallCurrencyColumnProperties("totalProfitDifference1"), field: 'totalProfitDifference1', headerName:"Total Profit Difference -1%", cellClassRules: profitCellClassRules, headerClass: 'bold-text-header' },
+        { ...smallCurrencyColumnProperties("manual_totalProfit2"), field: 'manual_totalProfit2', headerName:"Manual Total Profit -3%", cellClassRules: profitCellClassRules },
+        { ...smallCurrencyColumnProperties("totalProfitDifference2"), field: 'totalProfitDifference2', headerName:"Total Profit Difference -3%", cellClassRules: profitCellClassRules, headerClass: 'bold-text-header' },
+        { ...smallCurrencyColumnProperties("manual_totalProfit3"), field: 'manual_totalProfit3', headerName:"Manual Total Profit -10%", cellClassRules: profitCellClassRules },
+        { ...smallCurrencyColumnProperties("totalProfitDifference3"), field: 'totalProfitDifference3', headerName:"Total Profit Difference -10%", cellClassRules: profitCellClassRules, headerClass: 'bold-text-header' },
+    ]);
+
+    return (
+        <>
+            <AgGridReact
+                rowData={rowData}
+                // @ts-ignore
                 columnDefs={columnDefs}
                 headerHeight={40}>
             </AgGridReact>

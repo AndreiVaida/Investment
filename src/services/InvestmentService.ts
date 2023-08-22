@@ -1,20 +1,20 @@
 import { evaluate } from 'mathjs';
-import { ComplexInvestment, ComplexPerformance, Investment, InvestmentWithWithdrawFees, Performance, PerformanceWithWithdrawFees, SubstractFee } from "../models/Investment"
+import { ComplexInvestment, ComplexPerformance, ComplexVsManualPerformance, Investment, InvestmentWithWithdrawFees, Performance, PerformanceWithWithdrawFees, SubstractFee } from "../models/Investment"
 
 export const computePerformances = (investment: Investment, years: number[]): Performance[] =>
     years.map(year => {
         const performance: Performance = {
             year: year,
             investedMoney: computeInvestedMoney(investment.monthlyInvestment, year),
-            totalBalance: 0,
+            balance: 0,
             profit: 0
         };
-        performance.totalBalance = computeTotalBalance(investment.yearlyReturnPercent,
+        performance.balance = computeTotalBalance(investment.yearlyReturnPercent,
                                                        investment.substractFilingFee,
                                                        investment.monthlyInvestment,
                                                        investment.monthlyFee,
                                                        year);
-        performance.profit = performance.totalBalance - performance.investedMoney;
+        performance.profit = performance.balance - performance.investedMoney;
         return performance;
     });
 
@@ -124,37 +124,97 @@ export const computePerformancesWithWithdrawFees = (investment: InvestmentWithWi
         const performance: PerformanceWithWithdrawFees = {
             year: year,
             investedMoney: computeInvestedMoney(investment.monthlyInvestment, year),
-            totalBalance: 0,
-            totalBalance2: 0,
-            totalBalance3: 0,
+            balance: 0,
+            balance2: 0,
+            balance3: 0,
             profit: 0,
             profit2: 0,
             profit3: 0
         };
-        performance.totalBalance = computeTotalBalance(investment.yearlyReturnPercent,
+        performance.balance = computeTotalBalance(investment.yearlyReturnPercent,
                                                        investment.substractFilingFee,
                                                        investment.monthlyInvestment,
                                                        investment.monthlyFee,
                                                        year,
                                                        investment.substractWithdrawFeeVariants[0]);
-        performance.totalBalance2 = computeTotalBalance(investment.yearlyReturnPercent,
+        performance.balance2 = computeTotalBalance(investment.yearlyReturnPercent,
                                                         investment.substractFilingFee,
                                                         investment.monthlyInvestment,
                                                         investment.monthlyFee,
                                                         year,
                                                         investment.substractWithdrawFeeVariants[1]);
-        performance.totalBalance3 = computeTotalBalance(investment.yearlyReturnPercent,
+        performance.balance3 = computeTotalBalance(investment.yearlyReturnPercent,
                                                         investment.substractFilingFee,
                                                         investment.monthlyInvestment,
                                                         investment.monthlyFee,
                                                         year,
                                                         investment.substractWithdrawFeeVariants[2]);
-        performance.profit = performance.totalBalance - performance.investedMoney;
-        performance.profit2 = performance.totalBalance2 - performance.investedMoney;
-        performance.profit3 = performance.totalBalance3 - performance.investedMoney;
+        performance.profit = performance.balance - performance.investedMoney;
+        performance.profit2 = performance.balance2 - performance.investedMoney;
+        performance.profit3 = performance.balance3 - performance.investedMoney;
         return performance;
     });
 
+
+export const mergeAndComputeDifference = (years: number[], detailedAllianzInvestment: ComplexInvestment, manualBondsInvestment: Investment, manualStockMarketInvestment: InvestmentWithWithdrawFees): ComplexVsManualPerformance[] => {
+    return years.map((year, index) => {
+        const complexPerformance = detailedAllianzInvestment.performances[index];
+        const manualBondsPrformance = manualBondsInvestment.performances[index];
+        const manualStockPerformance = manualStockMarketInvestment.performances[index];
+
+        const manual_totalBalance1 = manualBondsPrformance.balance + manualStockPerformance.balance;
+        const manual_totalBalance2 = manualBondsPrformance.balance + manualStockPerformance.balance2;
+        const manual_totalBalance3 = manualBondsPrformance.balance + manualStockPerformance.balance3;
+        const manual_totalProfit1 = manualBondsPrformance.profit + manualStockPerformance.profit;
+        const manual_totalProfit2 = manualBondsPrformance.profit + manualStockPerformance.profit2;
+        const manual_totalProfit3 = manualBondsPrformance.profit + manualStockPerformance.profit3;
+
+        const complexVsManualPerformance: ComplexVsManualPerformance = {
+            year: year,
+            investedMoney: complexPerformance.investedMoneyInBonds + complexPerformance.investedMoneyInStockMarket,
+
+            complex_bondsBalance: complexPerformance.bondsBalance,
+            complex_bondsProfit: complexPerformance.bondsProfit,
+            complex_stockMarketBalance: complexPerformance.stockMarketBalance,
+            complex_stockMarketProfit: complexPerformance.stockMarketProfit,
+            complex_totalBalance: complexPerformance.totalBalance,
+            complex_totalProfit: complexPerformance.totalProfit,
+
+            manual_bondsBalance: manualBondsPrformance.balance,
+            manual_bondsProfit: manualBondsPrformance.profit,
+            manual_stockMarketBalance1: manualStockPerformance.balance,
+            manual_stockMarketBalance2: manualStockPerformance.balance2,
+            manual_stockMarketBalance3: manualStockPerformance.balance3,
+            manual_stockMarketProfit1: manualStockPerformance.profit,
+            manual_stockMarketProfit2: manualStockPerformance.profit2,
+            manual_stockMarketProfit3: manualStockPerformance.profit3,
+            manual_totalBalance1: manual_totalBalance1,
+            manual_totalBalance2: manual_totalBalance2,
+            manual_totalBalance3: manual_totalBalance3,
+            manual_totalProfit1: manual_totalProfit1,
+            manual_totalProfit2: manual_totalProfit2,
+            manual_totalProfit3: manual_totalProfit3,
+
+            bondsBalanceDifference: complexPerformance.bondsBalance - manualBondsPrformance.balance,
+            bondsProfitDifference: complexPerformance.bondsProfit - manualBondsPrformance.profit,
+
+            stockBalanceDifference1: complexPerformance.stockMarketBalance - manualStockPerformance.balance,
+            stockBalanceDifference2: complexPerformance.stockMarketBalance - manualStockPerformance.balance2,
+            stockBalanceDifference3: complexPerformance.stockMarketBalance - manualStockPerformance.balance3,
+            stockProfitDifference1: complexPerformance.stockMarketProfit - manualStockPerformance.profit,
+            stockProfitDifference2: complexPerformance.stockMarketProfit - manualStockPerformance.profit2,
+            stockProfitDifference3: complexPerformance.stockMarketProfit - manualStockPerformance.profit3,
+
+            totalBalanceDifference1: complexPerformance.totalBalance - manual_totalBalance1,
+            totalBalanceDifference2: complexPerformance.totalBalance - manual_totalBalance2,
+            totalBalanceDifference3: complexPerformance.totalBalance - manual_totalBalance3,
+            totalProfitDifference1: complexPerformance.totalProfit - manual_totalProfit1,
+            totalProfitDifference2: complexPerformance.totalProfit - manual_totalProfit2,
+            totalProfitDifference3: complexPerformance.totalProfit - manual_totalProfit3,
+        }
+
+        return complexVsManualPerformance;
+    });
+}
+
 const arrayOf = (n: number): number[] => Array.from(Array(n).keys());
-
-

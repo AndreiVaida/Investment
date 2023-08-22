@@ -1,10 +1,10 @@
 import './App.css';
-import { ComplexInvestmentGrid, InvestmentGrid, InvestmentGridWithMultipleWithdrawFees } from './components/InvestmentGrid';
-import { basicAllianzInvestment, detailedAllianzInvestment, manualBondsInvestment, manualStockMarketInvestment } from './data/DefaultInvestments';
+import { ComplexInvestmentGrid, ComplexInvestmentGridVsManualMultipleWithdrawFees, InvestmentGrid, InvestmentGridWithMultipleWithdrawFees } from './components/InvestmentGrid';
+import { basicAllianzInvestment, complexVsManualPerformances, detailedAllianzInvestment, manualBondsInvestment, manualStockMarketInvestment } from './data/DefaultInvestments';
 
 const App = () => {
   return (
-    <div className="App ag-theme-balham" style={{ height: 210, width: "100%" }}>
+    <div className="App ag-theme-balham" style={{ height: 230, width: "100%" }}>
       <h3>500 Lei / month</h3>
 
       <h2>Allianz Țiriac: Dinamic Invest - basic estimation</h2>
@@ -45,6 +45,9 @@ const App = () => {
         Transaction fee from government 20xx: 10% ?
       </div>
       <InvestmentGridWithMultipleWithdrawFees investment={manualStockMarketInvestment} />
+
+      <h2>Complex Allianz vs Strategy executed personally</h2>
+      <ComplexInvestmentGridVsManualMultipleWithdrawFees complexVsManualPerformances={complexVsManualPerformances} />
     </div>
   );
 }

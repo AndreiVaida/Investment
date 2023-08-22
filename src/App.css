@@ -31,3 +31,16 @@ h2 {
 .less-important {
   color: grey;
 }
+
+.right-border {
+  border-right: 1px solid lightgray !important;
+}
+
+.bold-text {
+  font-weight: bold;
+  
+}
+
+.bold-text-header {
+  color: black;
+}

@@ -89,10 +89,10 @@ export const InvestmentGridWithMultipleWithdrawFees = (props: InvestmentGridWith
         { field: 'year', width: 80 },
         { ...currencyColumnProperties("investedMoney"), field: 'investedMoney', headerClass: 'less-important', cellStyle: {color: 'grey'} },
         { ...currencyColumnProperties("balance"), field: 'balance', headerName:"Total Balance -1%" },
-        { ...currencyColumnProperties("balance2"), field: 'balance2', headerName:"Total Balance -4,7%" },
-        { ...currencyColumnProperties("balance3"), field: 'balance3', headerName:"Total Balance -10%" },
         { ...currencyColumnProperties("profit"), field: 'profit', headerName:"Profit -1%", cellClassRules: profitCellClassRules },
+        { ...currencyColumnProperties("balance2"), field: 'balance2', headerName:"Total Balance -4,7%" },
         { ...currencyColumnProperties("profit2"), field: 'profit2', headerName:"Profit -4,7%", cellClassRules: profitCellClassRules },
+        { ...currencyColumnProperties("balance3"), field: 'balance3', headerName:"Total Balance -10%" },
         { ...currencyColumnProperties("profit3"), field: 'profit3', headerName:"Profit -10%", cellClassRules: profitCellClassRules }
     ]);
 
@@ -113,11 +113,11 @@ export const ComplexInvestmentGridVsManualMultipleWithdrawFees = (props: Complex
         { field: 'year', width: 55, pinned: 'left' },
         { ...smallCurrencyColumnProperties("investedMoney"), field: 'investedMoney', headerClass: 'less-important', cellStyle: {color: 'grey'} },
 
-        { ...smallCurrencyColumnProperties("complex_bondsBalance"), field: 'complex_bondsBalance' },
+        { ...smallCurrencyColumnProperties("complex_bondsBalance"), field: 'complex_bondsBalance', headerName:"Allianz Bonds Balance" },
         { ...smallCurrencyColumnProperties("manual_bondsBalance"), field: 'manual_bondsBalance' },
         { ...smallCurrencyColumnProperties("bondsBalanceDifference"), field: 'bondsBalanceDifference', cellClassRules: profitCellClassRules, headerClass: 'bold-text-header' },
 
-        { ...smallCurrencyColumnProperties("complex_stockMarketBalance"), field: 'complex_stockMarketBalance' },
+        { ...smallCurrencyColumnProperties("complex_stockMarketBalance"), field: 'complex_stockMarketBalance', headerName:"Allianz Stock Market Balance" },
         { ...smallCurrencyColumnProperties("manual_stockMarketBalance1"), field: 'manual_stockMarketBalance1', headerName:"Stock Balance -1%" },
         { ...smallCurrencyColumnProperties("stockBalanceDifference1"), field: 'stockBalanceDifference1', headerName:"Stock Balance Difference -1%", cellClassRules: profitCellClassRules, headerClass: 'bold-text-header' },
         { ...smallCurrencyColumnProperties("manual_stockMarketBalance2"), field: 'manual_stockMarketBalance2', headerName:"Stock Balance -4,7%" },
@@ -125,7 +125,7 @@ export const ComplexInvestmentGridVsManualMultipleWithdrawFees = (props: Complex
         { ...smallCurrencyColumnProperties("manual_stockMarketBalance3"), field: 'manual_stockMarketBalance3', headerName:"Stock Balance -10%" },
         { ...smallCurrencyColumnProperties("stockBalanceDifference3"), field: 'stockBalanceDifference3', headerName:"Stock Balance Difference -10%", cellClassRules: profitCellClassRules, headerClass: 'bold-text-header' },
 
-        { ...smallCurrencyColumnProperties("complex_totalBalance"), field: 'complex_totalBalance' },
+        { ...smallCurrencyColumnProperties("complex_totalBalance"), field: 'complex_totalBalance', headerName:"Allianz Total Balance" },
         { ...smallCurrencyColumnProperties("manual_totalBalance1"), field: 'manual_totalBalance1', headerName:"Manual Total Balance -1%" },
         { ...smallCurrencyColumnProperties("totalBalanceDifference1"), field: 'totalBalanceDifference1', headerName:"Total Balance Difference -1%", cellClassRules: profitCellClassRules, headerClass: 'bold-text-header' },
         { ...smallCurrencyColumnProperties("manual_totalBalance2"), field: 'manual_totalBalance2', headerName:"Manual Total Balance -4,7%" },
@@ -133,7 +133,7 @@ export const ComplexInvestmentGridVsManualMultipleWithdrawFees = (props: Complex
         { ...smallCurrencyColumnProperties("manual_totalBalance3"), field: 'manual_totalBalance3', headerName:"Manual Total Balance -10%" },
         { ...smallCurrencyColumnProperties("totalBalanceDifference3"), field: 'totalBalanceDifference3', headerName:"Total Balance Difference -10%", cellClassRules: profitCellClassRules, headerClass: 'bold-text-header' },
 
-        { ...smallCurrencyColumnProperties("complex_totalProfit"), field: 'complex_totalProfit', cellClassRules: profitCellClassRules },
+        { ...smallCurrencyColumnProperties("complex_totalProfit"), field: 'complex_totalProfit', cellClassRules: profitCellClassRules, headerName:"Allianz Total Profit" },
         { ...smallCurrencyColumnProperties("manual_totalProfit1"), field: 'manual_totalProfit1', headerName:"Manual Total Profit -1%", cellClassRules: profitCellClassRules },
         { ...smallCurrencyColumnProperties("totalProfitDifference1"), field: 'totalProfitDifference1', headerName:"Total Profit Difference -1%", cellClassRules: profitCellClassRules, headerClass: 'bold-text-header' },
         { ...smallCurrencyColumnProperties("manual_totalProfit2"), field: 'manual_totalProfit2', headerName:"Manual Total Profit -4,7%", cellClassRules: profitCellClassRules },

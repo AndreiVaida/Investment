@@ -23,6 +23,7 @@ const App = () => {
       <InvestmentGrid investment={basicAllianzInvestment} />
 
       <h2>Allianz Țiriac: Dinamic Invest - detailed estimation (bonds and stock separately)</h2>
+      250 Lei in Bonds + 250 Lei in Stock monthly investment <br/>
       Bonds: 4% average yearly return <br/>
       Stock Market: 10% average yearly return
       <ComplexInvestmentGrid investment={detailedAllianzInvestment} />

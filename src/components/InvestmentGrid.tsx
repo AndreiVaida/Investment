@@ -49,7 +49,8 @@ export const InvestmentGrid = (props: InvestmentGridProps) => {
         <>
             <AgGridReact
                 rowData={rowData}
-                columnDefs={columnDefs}>
+                columnDefs={columnDefs}
+                enableCellTextSelection={true}>
             </AgGridReact>
         </>
     )
@@ -77,7 +78,8 @@ export const ComplexInvestmentGrid = (props: ComplexInvestmentGridProps) => {
             <AgGridReact
                 rowData={rowData}
                 columnDefs={columnDefs}
-                headerHeight={40}>
+                headerHeight={40}
+                enableCellTextSelection={true}>
             </AgGridReact>
         </>
     )
@@ -101,7 +103,8 @@ export const InvestmentGridWithMultipleWithdrawFees = (props: InvestmentGridWith
             <AgGridReact
                 rowData={rowData}
                 columnDefs={columnDefs}
-                headerHeight={40}>
+                headerHeight={40}
+                enableCellTextSelection={true}>
             </AgGridReact>
         </>
     )
@@ -148,7 +151,8 @@ export const ComplexInvestmentGridVsManualMultipleWithdrawFees = (props: Complex
                 rowData={rowData}
                 // @ts-ignore
                 columnDefs={columnDefs}
-                headerHeight={50}>
+                headerHeight={50}
+                enableCellTextSelection={true}>
             </AgGridReact>
         </>
     )
